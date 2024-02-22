@@ -7,6 +7,7 @@ import Home from './Components/Home';
 import User from './Components/User';
 import Log from './Components/Log';
 import Add_CR from './Components/Add_CR';
+import Add_User from './Components/Add_User';
 
 function App() {
    return(
@@ -18,6 +19,8 @@ function App() {
         <Route path='/dashboard/user' element={<User />}></Route>
         <Route path='/dashboard/log' element={<Log />}></Route>
         <Route path='/dashboard/add_cr' element={<Add_CR />}></Route>
+        <Route path='/dashboard/add_user' element={<Add_User />}></Route>
+
       </Route>
 
     </Routes>

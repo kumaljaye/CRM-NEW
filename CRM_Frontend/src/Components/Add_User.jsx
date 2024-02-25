@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from 'axios';
-
+import { useNavigate } from "react-router-dom";
 
 const Add_User = () => {
   const [user, setUser] = useState({
@@ -11,12 +11,21 @@ const Add_User = () => {
     password: "",
   });
 
-const handleSubmit = (e) => {
-    e.preventDefault()
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
     axios.post("http://localhost:3000/auth/add_user", user)
-    .then(result => console.log(result.data))
-    .catch(err => console.log(err))
-}
+    .then(result => {
+        if (result.data.Status) {
+            alert(result.data.Status);
+            navigate('/dashboard/user'); // Navigate to the user page after adding user
+        } else {
+            alert(result.data.Error);
+        }
+    })
+    .catch(err => console.log(err));
+  };
 
   return (
     <div className="d-flex justify-content-center align-items-center h-100">

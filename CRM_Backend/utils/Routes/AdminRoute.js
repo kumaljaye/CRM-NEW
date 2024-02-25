@@ -1,7 +1,7 @@
 import express from 'express';
 import con from '../db.js';
-import  jwt  from 'jsonwebtoken';
-import bcrypt from 'bcrypt'; 
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 import multer from 'multer';
 import path from 'path';
 
@@ -19,12 +19,12 @@ router.post('/adminlogin', (req, res) => {
             const token = jwt.sign(
                 { role: "admin", email: email },
                 "jwt_secret_key",
-                { expiresIn: "1d"}
+                { expiresIn: "1d" }
             );
             res.cookie('token', token);
             return res.json({ loginStatus: true });
         } else {
-            return res.json({ loginStatus: false, Error: "Wrong email or password" });  
+            return res.json({ loginStatus: false, Error: "Wrong email or password" });
         }
     });
 });
@@ -48,14 +48,21 @@ const storage = multer.diskStorage({
         cb(null, file.fieldname + "_" + Date.now() + path.extname(file.originalname))
     }
 })
+const upload = multer({
+    storage: storage
+})
 
 
 /////sfsdfdfdgdgf
 
 
-router.post('/add_cr', (req, res) => {
+router.post('/add_cr', upload.single('prototype'), (req, res) => {
     const sql = "INSERT INTO add_cr (topic, description, prototype) VALUES (?, ?, ?)";
-    const values = [req.body.topic, req.body.description, req.body.prototype]; 
+    const values = [
+        req.body.topic,
+        req.body.description,
+        req.file.filename
+    ];
     con.query(sql, values, (err, result) => {
         if (err) {
             return res.json({ Status: false, Error: "Query Error" });
@@ -63,6 +70,9 @@ router.post('/add_cr', (req, res) => {
         return res.json({ Status: true });
     });
 });
+
+
+
 router.post('/add_user', (req, res) => {
     const sql = 'INSERT INTO user \
          (name, department, type, email, password) \
@@ -87,6 +97,56 @@ router.post('/add_user', (req, res) => {
     });
 });
 
-                   
+
+router.get('/user', (req, res) => {
+    const sql = "SELECT * FROM user";
+    con.query(sql, (err, result) => {
+        if (err) {
+            return res.json({ Status: false, Error: "Query Error" });
+        }
+        return res.json({ Status: true, Result: result });
+    });
+});
+
+router.get('/user/:id', (req, res) => {
+    const id = req.params.id;
+    const sql = "SELECT * FROM user WHERE id = ?";
+    con.query(sql, [id], (err, result) => {
+        if (err) return res.json({ Status: false, Error: "Query Error" });
+        return res.json({ Status: true, Result: result });
+    });
+})
+
+router.put('/edit_user/:id', (req, res) => {
+    const id = req.params.id;
+    const sql = 'UPDATE user SET name=?, department=?, type=?, email=? WHERE id = ?';
+    const values = [
+        req.body.name,
+        req.body.department,
+        req.body.type,
+        req.body.email,
+        id 
+    ];
+    con.query(sql, values, (err, result) => {
+        if (err) return res.json({ Status: false, Error: "Query Error" + err });
+        return res.json({ Status: true, Result: result });
+    });
+});
+
+
+router.delete('/delete_user/:id', (req,res) => {
+    const id = req.params.id;
+    const sql = 'delete from user where id =?'
+    con.query(sql, [id], (err, result) => {
+        if (err) return res.json({ Status: false, Error: "Query Error" + err });
+        return res.json({ Status: true, Result: result });
+    });
+})
+
+router.get('/logout', (req,res) => {
+    res.clearCookie('token')
+    return res.json({Status: true})
+})
+
 
 export { router as adminRouter };

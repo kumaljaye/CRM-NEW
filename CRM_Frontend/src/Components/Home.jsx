@@ -25,24 +25,32 @@ const Home = () => {
         Add CR
       </Link>
     </div><div className="mt-3">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Topic</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              view_cr.map(c => (
-                <tr>
-                  <td>{c.topic}</td>
-                  <td>{c.description}</td>
-                </tr>
-              ))
-            }
-          </tbody>
-        </table>
+    <table className="table table-striped table-bordered">
+  <thead className="thead-dark"> 
+    <tr>
+      <th>Id</th>
+      <th>Topic</th>
+      <th>Description</th>
+      <th>Prototype</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {view_cr.map((c, index) => (
+      <tr key={index}>
+        <td>{c.id}</td>
+        <td>{c.topic}</td>
+        <td>{c.description}</td>
+        <td><img src={"http://localhost:3000/Images/"+c.prototype} alt=""/></td>
+        <td>
+          <button>Edit</button>
+          <button>Delete</button>
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
       </div></>
   );
 };

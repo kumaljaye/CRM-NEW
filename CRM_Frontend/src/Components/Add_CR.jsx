@@ -14,7 +14,11 @@ const Add_CR = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        axios.post('http://localhost:3000/auth/add_cr', values )
+        const formData = new FormData();
+        formData.append('topic', values.topic);
+        formData.append('description', values.description);
+        formData.append('prototype', values.prototype)
+        axios.post('http://localhost:3000/auth/add_cr', formData )
         .then(result => {
             if(result.data.Status) {alert(result.data.Status)
                 navigate('/dashboard')
@@ -44,8 +48,8 @@ const Add_CR = () => {
 
                 <div className='mb-3'>
                 <label htmlFor='Prototype'><strong>Prototype:</strong></label>
-                <input type='file' id='inputPrototype'
-                onChange={(e) => setUser({...user, prototype : e.target.files[0]})}/>
+                <input type='file' id='inputPrototype' name='prototype'
+                onChange={(e) => setValues({...values, prototype : e.target.files[0]})}/>
             </div>
 
                 <button className='btn btn-success w-100 rounded-0 mb-2'>Submit</button>

@@ -1,7 +1,18 @@
+import axios from "axios";
 import React from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
+  const navigate = useNavigate()
+  axios.defaults.withCredentials = true
+  const handleLogout = () => {
+    axios.get('http://localhost:3000/auth/logout')
+    .then(result => {
+      if(result.data.Status) {
+         navigate('/start')
+      }
+    })
+  }
   return (
     <>
       <button
@@ -99,9 +110,8 @@ const Dashboard = () => {
                 <span className="flex-1 ms-3 whitespace-nowrap">Add_CR</span>
               </Link>
             </li>
-            <li>
-              <a
-                href="#"
+            <li onClick={handleLogout}>
+              <Link
                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
                 <svg
@@ -120,7 +130,7 @@ const Dashboard = () => {
                   />
                 </svg>
                 <span className="flex-1 ms-3 whitespace-nowrap">Log Out</span>
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
